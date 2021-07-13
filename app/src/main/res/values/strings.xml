@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">DroneController</string>
+    <string name="arrowup">arrowUp</string>
+    <string name="arrowdown">arrowDown</string>
+    <string name="arrowright">arrowRight</string>
+    <string name="arrowleft">arrowLeft</string>
+    <string name="connect">connect</string>
+    <string name="status">status</string>
+    <string name="disconnect">disconnect</string>
+    <string name="menubutton">MenuButton</string>
+    <string name="flightbutton">flightButton</string>
+    <string name="down">down</string>
+    <string name="up">up</string>
+</resources>
