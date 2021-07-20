@@ -1,6 +1,5 @@
 package com.example.m4shr0.dronecontroller
 
-import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -12,7 +11,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.m4shr0.dronecontroller.databinding.ActivityMainBinding
-import com.example.m4shr0.dronecontroller.databinding.ActivityMainBinding.*
+import com.example.m4shr0.dronecontroller.databinding.ActivityMainBinding.inflate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -24,8 +23,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var mgValues = FloatArray(3)
     private var acValues = FloatArray(3)
 
-    private val scope = CoroutineScope(Dispatchers.Default)
+    private val sendScope = CoroutineScope(Dispatchers.Default)
     private val udp: UDP = UDP
+    private var command: String = ""
+
+    private var tookOff: Boolean = false
 
     private val takeOffAnim: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -63,7 +65,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             R.anim.invis_up_fab_animation
         )
     }
-    private var tookOff: Boolean = false
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         // no function
@@ -112,9 +113,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         binding.arrowUp1.visibility = View.INVISIBLE
         binding.arrowDown1.visibility = View.INVISIBLE
         binding.arrowRight1.visibility = View.INVISIBLE
-        scope.launch {
-            udp.send("ccw 30")
+        command = "ccw 30"
+        sendScope.launch {
+            udp.send(command)
         }
+        binding.sendView.text = command
 
     }
 
@@ -123,9 +126,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         binding.arrowUp1.visibility = View.INVISIBLE
         binding.arrowDown1.visibility = View.INVISIBLE
         binding.arrowLeft1.visibility = View.INVISIBLE
-        scope.launch {
-            udp.send("cw 30")
+        command = "cw 30"
+        sendScope.launch {
+            udp.send(command)
         }
+        binding.sendView.text = command
     }
 
     private fun back() { // TODO UDP
@@ -133,9 +138,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         binding.arrowUp1.visibility = View.INVISIBLE
         binding.arrowRight1.visibility = View.INVISIBLE
         binding.arrowLeft1.visibility = View.INVISIBLE
-        scope.launch {
-            udp.send("back 20")
+        command = "back 30"
+        sendScope.launch {
+            udp.send(command)
         }
+        binding.sendView.text = command
     }
 
     private fun forward() { // TODO UDP
@@ -143,21 +150,27 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         binding.arrowDown1.visibility = View.INVISIBLE
         binding.arrowRight1.visibility = View.INVISIBLE
         binding.arrowLeft1.visibility = View.INVISIBLE
-        scope.launch {
-            udp.send("forward 20")
+        command = "forward 30"
+        sendScope.launch {
+            udp.send(command)
         }
+        binding.sendView.text = command
     }
 
     private fun up(){
-        scope.launch{
-            udp.send("up 20")
+        command = "up 30"
+        sendScope.launch{
+            udp.send(command)
         }
+        binding.sendView.text = command
     }
 
     private fun down(){
-        scope.launch {
-            udp.send("down 20")
+        command = "down 30"
+        sendScope.launch {
+            udp.send(command)
         }
+        binding.sendView.text = command
     }
 
     private fun standBy() {
@@ -179,12 +192,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         val view = binding.root
         setContentView(view)
 
-        scope.launch{
+        sendScope.launch{
             startUp()
         }
+        binding.sendView.text = "command"
 
         binding.flightFAB.setOnClickListener{
-            scope.launch{
+            sendScope.launch{
                 flightCommand(tookOff)
             }
             if (!tookOff){
@@ -198,10 +212,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         binding.flightFAB.setOnLongClickListener {
             if (tookOff) {
-                scope.launch {
+                sendScope.launch {
                     udp.send("emergency")
                 }
-                Toast.makeText(this, "Sent Emergecy Command!!", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(this, "Sent Emergency Command!!", Toast.LENGTH_SHORT).show()
                 setAnimation(tookOff)
                 tookOff = !tookOff
             }
@@ -209,15 +224,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         binding.upFAB.setOnClickListener{
-            scope.launch {
-                udp.send("up 20")
-            }
+            up()
         }
 
         binding.downFAB.setOnClickListener{
-            scope.launch {
-                udp.send("down 20")
-            }
+            down()
         }
     }
 
@@ -251,7 +262,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     public override fun onResume() {
         super.onResume()
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         val magField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
         sensorManager.registerListener(this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL)
@@ -260,13 +271,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onPause() {
         super.onPause()
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         sensorManager.unregisterListener(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        scope.cancel()
+        sendScope.cancel()
         udp.close()
     }
 }

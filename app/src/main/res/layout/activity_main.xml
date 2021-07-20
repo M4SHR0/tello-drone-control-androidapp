@@ -10,13 +10,11 @@
         android:id="@+id/arrowUp1"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:layout_marginTop="200dp"
         android:contentDescription="@string/arrowup"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/arrowLeft1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/arrow_up" />
 
     <ImageView
@@ -93,4 +91,26 @@
         app:layout_constraintBottom_toTopOf="@+id/downFAB"
         app:layout_constraintEnd_toEndOf="@+id/downFAB"
         app:srcCompat="@drawable/up" />
+
+    <TextView
+        android:id="@+id/sendTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/command"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/sendView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sendView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sendTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sendTextView"
+        app:layout_constraintTop_toTopOf="@+id/sendTextView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
