@@ -16,17 +16,20 @@ object UDP {
 
         socket.send(packet)
     }
-    /**
-    fun receive():String{
+
+    /*
+    fun receive():Boolean{
         val buffer = ByteArray(8192)
         val packet = DatagramPacket(buffer,buffer.size)
 
         socket.receive(packet)
-        socket.close()
 
-        return buffer.toString()
+        return buffer.toString() == "ok"
     }
-    **/
+     */
+
+
+
     fun close(){
         socket.close()
     }
