@@ -9,6 +9,8 @@ Android 11(API 30)
 4. 離陸後に表示されたFABで上昇と下降
 5. 再度右下のFABを押すことで着陸
 6. 離陸中に右下のFABを長押しすると緊急停止
+
+![Videotogif](https://user-images.githubusercontent.com/76655329/146679025-cf5ee8b2-41df-433d-999a-f2ac49fe93a1.gif)
 # 使用技術
 - UDP通信
 - KotlinCorutines
